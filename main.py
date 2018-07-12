@@ -32,7 +32,7 @@ def get_files():
 @asyncio.coroutine
 def init(loop, app):
     srv = yield from loop.create_server(app.make_handler(),
-                                        '::1', 8080)
+                                        'localhost', 8080)
     return srv
 
 

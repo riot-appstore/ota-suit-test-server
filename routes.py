@@ -1,4 +1,5 @@
 import views
+import gen_manifest
 
 import os.path
 

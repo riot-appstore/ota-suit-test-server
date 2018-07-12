@@ -1,15 +1,18 @@
 <html>
     <body>
+    
+    
+    
     <form action="/files" method="post" accept-charset="utf-8"
       enctype="multipart/form-data">
 
-    <label for="fw">firmware or manifest: </label>
+    <label for="fw">Upload firmware: </label>
     <input id="fw" name="firmware" type="file" value=""/>
 
     <input type="submit" value="submit"/>
     </form>
 
-    <form action="/coap_send" method="post" accept-charset="utf-8">
+    <form action="/gen_manifest" method="post" accept-charset="utf-8">
     <table>
         <tr>
         <th></th><th>name</th><th>SHA1 truncated</th><th>size</th>
@@ -31,7 +34,37 @@
     <label for="signed">Cose signed</label>
     <input id="signed" type="checkbox" name="signed"><br>
     <!-- document -->
+    <input type="submit" value="generate"/>
+
+
+    </form>
+
+    <form action="/coap_send" method="post" accept-charset="utf-8">
+    <table>
+        <tr>
+        <th></th><th>name</th><th>SHA1 truncated</th><th>size</th>
+        </tr>
+    {% for manifest in manifests %}
+        <tr>
+        <th><input type="radio" name="file" value="{{manifest.digest}}"></th>
+        <th>{{ manifest.path.name }} </th>
+        <th><a href = "{{ manifest.url }}">{{manifest.digest}}</th>
+        <th>{{ manifest.path.stat().st_size }}B</th>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <label for="target">CoAP URL</label>
+    <input id="target" type="text" name="target"
+    value="coap://target.host/local/part"><br>
+
+    <label for="signed">Cose signed</label>
+    <input id="signed" type="checkbox" name="signed"><br>
+    <!-- document -->
     <input type="submit" value="submit"/>
     </form>
+    
+    
+    
     </body>
 </html>

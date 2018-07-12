@@ -23,7 +23,9 @@ async def index(request):
 
 @aiohttp_jinja2.template('files.jinja2')
 async def files(request):
-    return {'files': request.app['uploads']}
+    return {'files': request.app['uploads'],
+            'manifests': request.app['manifests']
+            }
 
 
 async def file_upload(request):

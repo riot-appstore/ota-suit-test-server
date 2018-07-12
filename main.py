@@ -28,6 +28,15 @@ def get_files():
             files.append(resources.FirmwareFile(child, url, m))
     return files
 
+def get_manifests():
+    p = Path('./manifests')
+    manifests = []
+    for child in p.iterdir():
+        with child.open('rb') as f:
+            m = hashlib.sha1(f.read()).hexdigest()[:16]
+            url = os.path.join('f', m)
+            manifests.append(resources.FirmwareFile(child, url, m))
+    return manifests
 
 @asyncio.coroutine
 def init(loop, app):
@@ -48,8 +57,12 @@ if __name__ == "__main__":
     app = web.Application(loop=loop)
     aiohttp_jinja2.setup(app,
                          loader=jinja2.FileSystemLoader('templates'))
+
     app['uploads'] = get_files()
+    app['manifests'] = get_manifests()
+
     app['coap'] = coap
+
     for dpt in app['uploads']:
         resources.add_file_resource(coap, dpt)
     routes.setup_routes(app, PROJECT_ROOT)

@@ -11,3 +11,6 @@ LinkHeader==0.4.3
 MarkupSafe==1.0
 multidict==4.3.1
 yarl==1.2.4
+cbor
+ed25519
+pyasn1

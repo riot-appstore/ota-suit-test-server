@@ -44,8 +44,7 @@ def init(loop, app):
                                         'localhost', 8080)
     return srv
 
-
-if __name__ == "__main__":
+def main():
     logging.basicConfig(level=logging.INFO)
 
     loop = asyncio.get_event_loop()
@@ -74,3 +73,6 @@ if __name__ == "__main__":
         loop.run_forever()
     except KeyboardInterrupt:
         pass
+
+if __name__ == "__main__":
+    main()

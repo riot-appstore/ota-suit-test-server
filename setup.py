@@ -26,6 +26,11 @@ setup(name='ota-suit-test-server',
       author_email='koen@bergzand.net',
       license='MIT',
       packages=['ota_suit_server'],
+      entry_points={
+          'console_scripts': [
+              'ota-suit-server = ota_suit_server.__main__:main'
+          ]
+      },
       install_requires=[
         'aiocoap',
         'aiohttp',

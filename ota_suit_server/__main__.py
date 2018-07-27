@@ -41,7 +41,7 @@ def get_manifests():
 @asyncio.coroutine
 def init(loop, app):
     srv = yield from loop.create_server(app.make_handler(),
-                                        'localhost', 8080)
+                                        '0.0.0.0', 80)
     return srv
 
 def main():

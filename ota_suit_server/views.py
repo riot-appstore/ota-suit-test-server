@@ -1,4 +1,4 @@
-import resources
+from . import resources
 
 from aiohttp import web
 import aiocoap

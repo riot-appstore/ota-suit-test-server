@@ -6,8 +6,8 @@ import jinja2
 import aiocoap.resource as resource
 import aiocoap
 
-import routes
-import resources
+from . import routes
+from . import resources
 
 import asyncio
 import hashlib

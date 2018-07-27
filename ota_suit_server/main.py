@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     app = web.Application(loop=loop)
     aiohttp_jinja2.setup(app,
-                         loader=jinja2.FileSystemLoader('templates'))
+                         loader=jinja2.PackageLoader(__package__, 'templates'))
 
     app['uploads'] = get_files()
     app['manifests'] = get_manifests()

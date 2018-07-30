@@ -18,25 +18,35 @@ import os.path
 PROJECT_ROOT = '.'
 
 
-def get_files():
-    p = Path('./uploads')
-    files = []
+def get_binaries():
+    p = Path('./uploads/bin')
+    binaries = []
     for child in p.iterdir():
         with child.open('rb') as f:
             m = hashlib.sha1(f.read()).hexdigest()[:16]
             url = os.path.join('f', m)
-            files.append(resources.FirmwareFile(child, url, m))
-    return files
+            binaries.append(resources.ResourceFile(child, url, m))
+    return binaries
 
 def get_manifests():
-    p = Path('./manifests')
+    p = Path('./uploads/man')
     manifests = []
     for child in p.iterdir():
         with child.open('rb') as f:
             m = hashlib.sha1(f.read()).hexdigest()[:16]
             url = os.path.join('f', m)
-            manifests.append(resources.FirmwareFile(child, url, m))
+            manifests.append(resources.ResourceFile(child, url, m))
     return manifests
+
+def get_public_keys():
+    p = Path('./uploads/pk')
+    public_keys = []
+    for child in p.iterdir():
+        with child.open('rb') as f:
+            m = hashlib.sha1(f.read()).hexdigest()[:16]
+            url = os.path.join('f', m)
+            public_keys.append(resources.ResourceFile(child, url, m))
+    return public_keys
 
 @asyncio.coroutine
 def init(loop, app):
@@ -58,13 +68,19 @@ if __name__ == "__main__":
     aiohttp_jinja2.setup(app,
                          loader=jinja2.FileSystemLoader('templates'))
 
-    app['uploads'] = get_files()
+    app['binaries'] = get_binaries()
+    app['public_keys'] = get_public_keys()
     app['manifests'] = get_manifests()
 
     app['coap'] = coap
 
-    for dpt in app['uploads']:
+    for dpt in app['binaries']:
         resources.add_file_resource(coap, dpt)
+    for dpt in app['public_keys']:
+        resources.add_file_resource(coap, dpt)
+    for dpt in app['manifests']:
+        resources.add_file_resource(coap, dpt)
+
     routes.setup_routes(app, PROJECT_ROOT)
 
     asyncio.Task(aiocoap.Context.create_server_context(coap))

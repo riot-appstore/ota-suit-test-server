@@ -15,29 +15,52 @@ def check_exists(uploads, name, digest):
     return False
 
 
-def add_upload(uploads, coap, name, content):
+def add_upload_bin(uploads, coap, name, content):
     m = hashlib.sha1(content).hexdigest()[:16]
     if check_exists(uploads, name, m):
         return None
-    with open(os.path.join('./uploads', name), 'wb') as f:
+    with open(os.path.join('./uploads/bin', name), 'wb') as f:
         f.write(content)
-    fw = FirmwareFile(Path(os.path.join('uploads', name)),
-                      os.path.join('/f', m), m)
+    fw = ResourceFile(Path(os.path.join('uploads/bin', name)),
+                      os.path.join('/f/bin', m), m)
     add_file_resource(coap, fw)
     uploads.append(fw)
     return fw
 
+def add_upload_pk(uploads, coap, name, content):
+    m = hashlib.sha1(content).hexdigest()[:16]
+    if check_exists(uploads, name, m):
+        return None
+    with open(os.path.join('./uploads/pk', name), 'wb') as f:
+        f.write(content)
+    fw = ResourceFile(Path(os.path.join('uploads/pk', name)),
+                      os.path.join('/f/pk', m), m)
+    add_file_resource(coap, fw)
+    uploads.append(fw)
+    return fw
+
+def add_upload_man(uploads, coap, name, content):
+    m = hashlib.sha1(content).hexdigest()[:16]
+    if check_exists(uploads, name, m):
+        return None
+    with open(os.path.join('./uploads/man', name), 'wb') as f:
+        f.write(content)
+    fw = ResourceFile(Path(os.path.join('uploads/man', name)),
+                      os.path.join('/f/man', m), m)
+    add_file_resource(coap, fw)
+    uploads.append(fw)
+    return fw
 
 def add_file_resource(coap, fw):
     coap.add_resource(('f', fw.digest),
-                      FirmwareResource(fw.path))
+                      FileResource(fw.path))
 
 
-class FirmwareFile(namedtuple('FirmwareFile', ['path', 'url', 'digest'])):
+class ResourceFile(namedtuple('ResourceFile', ['path', 'url', 'digest'])):
         pass
 
 
-class FirmwareResource(resource.Resource):
+class FileResource(resource.Resource):
 
     def __init__(self, path):
         super().__init__()

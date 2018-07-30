@@ -1,16 +1,14 @@
-#!/usr/bin/env python
-
 import argparse
 import base64
 import binascii
 import calendar
-import cbor
 import hashlib
 import os
 import os.path
 import time
 import uuid
 
+import cbor
 import ed25519
 from pyasn1.type import univ
 from pyasn1.type.namedtype import NamedType, NamedTypes

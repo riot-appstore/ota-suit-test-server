@@ -1,8 +1,8 @@
-from . import views
-from . import gen_manifest
 
 import os.path
 
+from . import views
+from . import gen_manifest
 
 def setup_routes(app, root):
     app.router.add_get('/', views.index)

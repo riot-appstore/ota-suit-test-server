@@ -1,12 +1,12 @@
-from . import resources
+
+import logging
 
 from aiohttp import web
 import aiocoap
 import aiohttp_jinja2
 from multidict import MultiDict
 
-import logging
-
+from . import resources
 
 async def index(request):
     text = """

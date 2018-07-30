@@ -1,4 +1,8 @@
-#!/usr/bin/env python
+import asyncio
+import hashlib
+import logging
+from pathlib import Path
+import os.path
 
 from aiohttp import web
 import aiohttp_jinja2
@@ -9,14 +13,7 @@ import aiocoap
 from . import routes
 from . import resources
 
-import asyncio
-import hashlib
-import logging
-from pathlib import Path
-import os.path
-
 PROJECT_ROOT = '.'
-
 
 def get_files():
     p = Path('./uploads')

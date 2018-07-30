@@ -1,10 +1,11 @@
-import aiocoap
-import aiocoap.resource as resource
+
 from collections import namedtuple
 import hashlib
 import os.path
 from pathlib import Path
 
+import aiocoap
+import aiocoap.resource as resource
 
 def check_exists(uploads, name, digest):
     for upload in uploads:

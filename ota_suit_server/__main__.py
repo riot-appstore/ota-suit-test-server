@@ -6,8 +6,8 @@ import jinja2
 import aiocoap.resource as resource
 import aiocoap
 
-import routes
-import resources
+from . import routes
+from . import resources
 
 import asyncio
 import hashlib
@@ -44,8 +44,7 @@ def init(loop, app):
                                         'localhost', 8080)
     return srv
 
-
-if __name__ == "__main__":
+def main():
     logging.basicConfig(level=logging.INFO)
 
     loop = asyncio.get_event_loop()
@@ -56,7 +55,7 @@ if __name__ == "__main__":
 
     app = web.Application(loop=loop)
     aiohttp_jinja2.setup(app,
-                         loader=jinja2.FileSystemLoader('templates'))
+                         loader=jinja2.PackageLoader(__package__, 'templates'))
 
     app['uploads'] = get_files()
     app['manifests'] = get_manifests()
@@ -74,3 +73,6 @@ if __name__ == "__main__":
         loop.run_forever()
     except KeyboardInterrupt:
         pass
+
+if __name__ == "__main__":
+    main()

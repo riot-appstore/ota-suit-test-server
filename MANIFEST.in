@@ -1,0 +1,2 @@
+include README.md
+recursive-include ota_suit_server *.jinja2

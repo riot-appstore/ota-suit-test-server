@@ -28,7 +28,8 @@ setup(name='ota-suit-test-server',
       packages=['ota_suit_server'],
       entry_points={
           'console_scripts': [
-              'ota-suit-server = ota_suit_server.__main__:main'
+              'ota-suit-server = ota_suit_server.__main__:main',
+              'ota-manifest = ota_suit_server.gen_manifest:main'
           ]
       },
       install_requires=[

@@ -7,4 +7,5 @@ general development philosopy.
 
 ## Usage
 
-This package install a script called `ota-suit-server`.
+This package installs a script called `ota-suit-server` and a tool for generating
+manifests (`ota-manifest`).

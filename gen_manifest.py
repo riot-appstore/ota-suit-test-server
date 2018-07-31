@@ -224,9 +224,26 @@ def gen_unsigned(binary, version):
 
     return cbor.dumps(suit)
 
+def sign_manifest():
+    args = _get_args()
+    key_data = args.key.read()
+    skey = None
+    if args.raw:
+        skey = ed25519.SigningKey(key_data)
+    else:
+        skey = ed25519.SigningKey(_parse_privkey(key_data))
+#    f = open(args.filename, 'rb')
+    f = bytearray(args.file.read())
+    print(args.filename)
+    print("f is:")
+    print(f)
+    myfile = cbor.loads(f)
+    sign = _sign1(cbor.dumps(myfile), "test", skey)
+    args.output.write(cbor.dumps(sign))
+    return 0
+
 def main():
     args = _get_args()
-    print(args)
     key_data = args.key.read()
     skey = None
     if args.raw:
@@ -235,6 +252,8 @@ def main():
         skey = ed25519.SigningKey(_parse_privkey(key_data))
     suit = _format_suit(args)
     print("manifest generated, {} bytes long".format(len(cbor.dumps(suit))))
+    f = open("unsigned_intermediate_manifest.cbor","wb")
+    f.write(cbor.dumps(suit))
     sign = _sign1(cbor.dumps(suit), "test", skey)
     args.output.write(cbor.dumps(sign))
     return 0

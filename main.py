@@ -64,6 +64,7 @@ if __name__ == "__main__":
     coap.add_resource(('.well-known', 'core'),
                       resource.WKCResource(coap.get_resources_as_linkheader))
 
+
     app = web.Application(loop=loop)
     aiohttp_jinja2.setup(app,
                          loader=jinja2.FileSystemLoader('templates'))
@@ -73,6 +74,7 @@ if __name__ == "__main__":
     app['manifests'] = get_manifests()
 
     app['coap'] = coap
+    app['static_root_url'] = '/static'
 
     for dpt in app['binaries']:
         resources.add_file_resource(coap, dpt)

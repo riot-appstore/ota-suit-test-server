@@ -16,3 +16,4 @@ def setup_routes(app, root):
     app.router.add_static('/f/bin', path=os.path.join(root, 'uploads/bin'), name='f.bin')
     app.router.add_static('/f/man', path=os.path.join(root, 'uploads/man'), name='f.man')
     app.router.add_static('/f/pk', path=os.path.join(root, 'uploads/pk'), name='f.pk')
+    app.router.add_static('/static', path=os.path.join(root,'static'), name='static')

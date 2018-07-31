@@ -1,46 +1,12 @@
 <html>
+    <head>
+    <link rel="stylesheet" type = text/css href="static/styles.css">
+    </head>
     <body>
-
-
-    <!-- Public key uploader -->
-    <form action="/public_keys" method="post" accept-charset="utf-8"
-      enctype="multipart/form-data">
-    <label for="pk">Upload your public key: </label>
-    <input id="pk" name="public_key" type="file" value=""/>
-
-    <input type="submit" value="submit"/>
-    </form>
-
-
-    <!-- Binary uploader - replace later with builder -->
-    <form action="/binaries" method="post" accept-charset="utf-8"
-      enctype="multipart/form-data">
-
-    <label for="bin">Upload your firmware binary: </label>
-    <input id="bin" name="binary" type="file" value=""/>
-
-    <input type="submit" value="submit"/>
-    </form>
-
 
     <!-- Manifest generator - lists binaries and public keys and generates a manifest for download -->
     <form action="/get_manifest" method="post" accept-charset="utf-8">
-    <label for="fw">Generate and download your manifest. </label> <br />
-    <label for="fw">Choose your public key: </label>
-    <table>
-        <tr>
-        <th></th><th>name</th><th>SHA1 truncated</th><th>size</th>
-        </tr>
-    {% for public_key in public_keys %}
-        <tr>
-        <th><input type="radio" name="public_key" value="{{public_key.digest}}"></th>
-        <th>{{ public_key.path.name }} </th>
-        <th><a href = "{{ public_key.url }}">{{public_key.digest}}</th>
-        <th>{{ public_key.path.stat().st_size }}B</th>
-        </tr>
-    {% endfor %}
-    </table>
-
+    <h1 for="fw">Step 1: Download your manifest for signing. </h1>
     <label for="fw">Choose your binary: </label>
     <table>
         <tr>
@@ -55,25 +21,22 @@
         </tr>
     {% endfor %}
     </table>
-    <label for="signed">Cose signed</label>
-    <input id="signed" type="checkbox" name="signed"><br>
-    <input type="submit" value="generate"/>
+    <input type="submit" value="Download manifest"/>
     </form>
 
     
     <!-- Manifest re-uploader  -->
     <form action="/upload_manifest" method="post" accept-charset="utf-8"
       enctype="multipart/form-data">
-
-    <label for="man">Upload your signed manifest: </label>
+    <h1 for="man">Step 2: Upload your signed manifest. </h1>
     <input id="man" name="manifest" type="file" value=""/>
-
     <input type="submit" value="submit"/>
     </form>
     
     
     <!-- Manifest deployer - CoAP push to node -->
     <form action="/coap_push" method="post" accept-charset="utf-8">
+    <h1 for="man">Step 3: Push your manifest to your node.</h1>
     <table>
         <tr>
         <th></th><th>name</th><th>SHA1 truncated</th><th>size</th>
@@ -87,16 +50,12 @@
         </tr>
     {% endfor %}
     </table>
-
     <label for="target">CoAP endpoint for deployment</label>
     <input id="target" type="text" name="target"
     value="coap://target.host/local/part"><br>
-
-    <label for="signed">Cose signed</label>
-    <input id="signed" type="checkbox" name="signed"><br>
-    <input type="submit" value="submit"/>
+    <input type="submit" value="push"/>
     </form>
     
-    
+
     </body>
 </html>

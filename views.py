@@ -22,12 +22,13 @@ async def index(request):
     return web.Response(text=text)
 
 
-@aiohttp_jinja2.template('files.jinja2')
 async def files(request):
-    return {'binaries': request.app['binaries'],
-            'public_keys': request.app['public_keys'],
-            'manifests': request.app['manifests']
-            }
+    response = aiohttp_jinja2.render_template('files.jinja2',
+                                          request,
+                                          {'binaries': request.app['binaries'],
+                                           'public_keys': request.app['public_keys'],
+                                           'manifests': request.app['manifests']})
+    return response
 
 
 async def public_key_upload(request):

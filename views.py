@@ -1,4 +1,5 @@
 import resources
+import gen_manifest
 
 from aiohttp import web
 import aiocoap
@@ -95,6 +96,29 @@ async def file_by_digest(request):
                       'Attachment;filename={}'.format(req_fw.path.name)})
     return web.Response(headers=hdrs,
                         body=data)
+
+
+async def get_manifest(request):
+    data = await request.post()
+    #public_key = data['public_key']
+    binary_dig = data['binary']
+    binaries = request.app['binaries']
+    req_b = None
+    for b in binaries:
+        if b.digest == binary_dig:
+            req_b = b
+
+    full_url = "coap://[2002:8d16:1b8e:28:141:22:28:91]/" + req_b.url
+    print(full_url)
+
+    version = 1
+
+    manifest = gen_manifest.gen_unsigned(req_b,  version)
+
+    hdrs = MultiDict({'Content-Disposition':
+                      'Attachment;filename=my_manifest.cbor'})
+    return web.Response(headers=hdrs,
+                        body=manifest)
 
 
 #async def coap_push(request):

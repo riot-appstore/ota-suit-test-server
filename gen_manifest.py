@@ -195,6 +195,34 @@ def _get_args():
     args.filename = args.file.name
     return args
 
+def gen_unsigned(binary, version):
+    
+    uri = "coap://[2002:8d16:1b8e:28:141:22:28:91]/" + binary.url
+    filename = str(binary.path)
+    print(filename)
+    suit = [
+            version,
+            None,
+            _get_nonce(),
+            _get_timestamp(),
+            None,
+            None,
+            None,
+            None,
+            None,
+           ]
+    payloadinfo = [
+             [PAYLOADFORMAT_BIN],
+             _get_bin_size(filename),
+             None,
+             [[1, uri]],
+             [DIGEST_TYPE_SHA256],
+             {1: _get_bin_hash(filename)},
+             None
+        ]
+    suit.append(payloadinfo)
+
+    return cbor.dumps(suit)
 
 def main():
     args = _get_args()

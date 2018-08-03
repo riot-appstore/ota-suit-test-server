@@ -16,21 +16,23 @@ async def index(request):
     return response
 
 async def download_keygen(request):
-    with request.app['dyn_resources']['keygen'].flasher.path.open('rb') as f:
+    print(request.app['dyn_resources']['keygens'])
+    with request.app['dyn_resources']['keygens'][0].path.open('rb') as f:
         data = f.read()
     hdrs = MultiDict({'Content-Disposition':
-                      'Attachment;filename={}'.format(request.app['dyn_resources']['keygen'].keygen.path.name)})
+                      'Attachment;filename={}'.format(request.app['dyn_resources']['keygens'][0].path.name)})
     return web.Response(headers=hdrs,
                         body=data)
 
 
 async def upload_publickey(request):
     data = await request.post()
+    print(data)
     pk_data = data['public_key']
     pk = pk_data.file
     logging.debug("uploaded file {}".format(pk_data.filename))
     content = pk.read()
-    res = resources.add_upload("public_key", request.app['dyn_resources']['public_keys'],
+    res = resources.add_upload("public_key", request.app['dyn_resources']['public_keys'][0],
                               request.app['coap'],
                               pk_data.filename, content)
     if not res:
@@ -39,10 +41,10 @@ async def upload_publickey(request):
                                                                res.digest))
     
 async def download_flasher(request):
-    with request.app['dyn_resources']['flasher_paks'].flasher.path.open('rb') as f:
+    with request.app['dyn_resources']['flasher_paks'][0].path.open('rb') as f:
         data = f.read()
     hdrs = MultiDict({'Content-Disposition':
-                      'Attachment;filename={}'.format(request.app['dyn_resources']['flasher_paks'].flasher.path.name)})
+                      'Attachment;filename={}'.format(request.app['dyn_resources']['flasher_paks'][0].path.name)})
     return web.Response(headers=hdrs,
                         body=data)
 
@@ -51,7 +53,7 @@ async def get_manifest(request):
     data = await request.post()
     version = 2
 
-    manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['binaries'],  version)
+    manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][0],  version)
 
     hdrs = MultiDict({'Content-Disposition':
                       'Attachment;filename=my_manifest.cbor'})
@@ -65,7 +67,7 @@ async def upload_signed_manifest(request):
     fw_file = fw_data.file
     logging.debug("upload on file {}".format(fw_data.filename))
     content = fw_file.read()
-    fw = resources.add_upload("manifest", request.app['dyn_resources']['manifests'],
+    fw = resources.add_upload("manifest", request.app['dyn_resources']['manifests'][0],
                               request.app['coap'],
                               fw_data.filename, content)
 
@@ -92,7 +94,7 @@ async def ota_deploy(request):
     except Exception as e:
         logging.warning("Error sending coap request: ".format(e))
         return web.Response(text="Error sending file {}"
-                                 " to target {}".format(request.app['dyn_resources']['builds'].binary.path.name,
+                                 " to target {}".format(request.app['dyn_resources']['builds'][0].path.name,
                                                         target))
-    return web.Response(text="Sent file {} to target {}".format(request.app['dyn_resources']['builds'].binary.path.name,
+    return web.Response(text="Sent file {} to target {}".format(request.app['dyn_resources']['builds'][0].path.name,
                                                                 target))

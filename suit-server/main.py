@@ -56,12 +56,12 @@ def _get_dyn_resources():
             url = os.path.join('f', m)
             keygens.append(resources.ResourceFile(child, url, m))
 
-    resources = {"public_keys": public_keys,
+    resourcedict = {"public_keys": public_keys,
             "signed_manifests": signed_mans,
             "builds": builds,
             "flasher_paks": flasher_paks,
             "keygens": keygens}
-    return resources
+    return resourcedict
 
 
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     app['app_approved'] = "false"
     
     app['coap'] = coap
-    app['static_root_url'] = '/static'
+    app['static_root_url'] = './static'
 
     for dpt in app['dyn_resources']['public_keys']:
         resources.add_file_resource(coap, dpt)
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         resources.add_file_resource(coap, dpt)
     for dpt in app['dyn_resources']['flasher_paks']:
         resources.add_file_resource(coap, dpt)
-    for dpt in app['dyn_resources']['keygen']:
+    for dpt in app['dyn_resources']['keygens']:
         resources.add_file_resource(coap, dpt)
 
     routes.setup_routes(app, PROJECT_ROOT)

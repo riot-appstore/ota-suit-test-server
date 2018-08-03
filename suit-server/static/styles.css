@@ -1,4 +1,42 @@
-h1 {
-	color: red;
-	font-size: 20px;
+body {
+	font-family: Helvetica, sans-serif;
+        background-color: ghostwhite;
 }
+
+h1 {
+	color: white;
+	font-size: 20px;
+	padding-left: 1ex;
+}
+
+p, form {
+	color: white;
+	font-size: 14px;
+}
+
+.section {
+	border: black solid 2px;
+	padding: 20px 10px;
+	margin: 1ex;
+	border-radius: 10px;
+}
+div.page {
+	width: 500px;
+        margin: 1ex auto;
+	border-radius: 10px;
+	padding: 1ex;
+}
+div.section {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+/*input {
+  background-color: darkslateblue;
+  border: black 2px;
+  border-radius: 2px;
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+}*/

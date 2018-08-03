@@ -6,23 +6,25 @@
     <body>
     
         <!-- User profile section - for key management -->
-        <div style="background-color:lightblue">
+        <div style="background-color:dodgerblue" class="page">
             <h1>User key management</h1>
-            <form action="/download_keygen" method="get">
+            <form action="/download_keygen" method="get" class="section">
                 <input type="submit" value="Download keygen and signer">
             </form>
-            <form action="/upload_publickey" method="post">
+            <form action="/upload_publickey" method="post" class="section">
                 <input name="public_key" type="file"/>
                 <input type="submit" value="Replace your public key"/>
             </form>
         </div>
 
         <!-- App page section -->
-        <div style="background-color:lightred">
+        <div style="background-color:darkturquoise" class="page">
             <h1>Awesome IoT app page</h1>
-            <form action="/download_flasher" method="get">
+            <form action="/download_flasher" method="get" class="section"> 
                 <input type="submit" value="Download OTA bootloader and app v1 flasher">
             </form>
+	    <div class="section">
+	    <p>Approve the application for your node</p>
             <form action="/get_manifest"  method="get">
                 <input type="submit" value="Download manifest for signing">
             </form>
@@ -31,7 +33,8 @@
                 <input type="submit" value="Upload your signed manifest"/>
             </form>
             <p>Is your application approved: {{ app_approved }}</p>
-            <form action="/ota_deploy" method="post" accept-charset="utf-8">
+	    </div>
+            <form action="/ota_deploy" method="post" accept-charset="utf-8" class="section">
                 <label>CoAP endpoint:</label>
                 <input id="target" type="text" name="target" value="coap://target.host/local/part">
                 <input type="submit" value="push app v2"/>

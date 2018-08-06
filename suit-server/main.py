@@ -19,7 +19,7 @@ PROJECT_ROOT = '.'
 
 
 def _get_dyn_resources():
-    p = Path('/home/danielpetry/Sandbox/ota-resources/')
+    p = Path('../ota-resources/')
     public_keys = []
     signed_mans = []
     builds = []
@@ -73,7 +73,7 @@ def init(loop, app):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     loop = asyncio.get_event_loop()
 

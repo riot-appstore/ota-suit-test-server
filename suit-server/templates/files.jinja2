@@ -11,7 +11,7 @@
             <form action="/download_keygen" method="get" class="section">
                 <input type="submit" value="Download keygen and signer">
             </form>
-            <form action="/upload_publickey" method="post" class="section">
+            <form action="/upload_publickey" method="post" class="section" enctype="multipart/form-data">
                 <input name="public_key" type="file"/>
                 <input type="submit" value="Replace your public key"/>
             </form>
@@ -24,11 +24,11 @@
                 <input type="submit" value="Download OTA bootloader and app v1 flasher">
             </form>
 	    <div class="section">
-	    <p>Approve the application for your node</p>
+	    <p style="font-weight:bold">Approve the application for your node</p>
             <form action="/get_manifest"  method="get">
                 <input type="submit" value="Download manifest for signing">
             </form>
-            <form action="/upload_signed_manifest" method="post">
+            <form action="/upload_signed_manifest" method="post" enctype="multipart/form-data">
                 <input name="signed_manifest" type="file"/>
                 <input type="submit" value="Upload your signed manifest"/>
             </form>

@@ -125,9 +125,6 @@ def main():
     else:
         skey = ed25519.SigningKey(_parse_privkey(key_data))
     f = bytearray(args.file.read())
-    print(args.filename)
-    print("f is:")
-    print(f)
     myfile = cbor.loads(f)
     sign = _sign1(cbor.dumps(myfile), "test", skey)
     args.output.write(cbor.dumps(sign))

@@ -32,7 +32,7 @@ async def upload_publickey(request):
     pk = pk_data.file
     logging.debug("uploaded file {}".format(pk_data.filename))
     content = pk.read()
-    res = resources.add_upload("public_key", request.app['dyn_resources']['public_keys'][0],
+    res = resources.add_upload("public_key", request.app['dyn_resources']['public_keys'],
                               request.app['coap'],
                               pk_data.filename, content)
     if not res:
@@ -67,14 +67,15 @@ async def upload_signed_manifest(request):
     fw_file = fw_data.file
     logging.debug("upload on file {}".format(fw_data.filename))
     content = fw_file.read()
-    fw = resources.add_upload("manifest", request.app['dyn_resources']['manifests'][0],
+    fw = resources.add_upload("signed_manifest", request.app['dyn_resources']['signed_manifests'],
                               request.app['coap'],
                               fw_data.filename, content)
 
-    app['app_approved'] = "true"
+    print(fw)
+    request.app['app_approved'] = "true"
 
     if not fw:
-        app['app_approved'] = "false"
+        request.app['app_approved'] = "false"
         raise web.HTTPUnprocessableEntity
     return web.Response(text='{} with digest {} stored'.format(fw.path.name,
                                                                fw.digest))

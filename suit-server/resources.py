@@ -4,6 +4,7 @@ from collections import namedtuple
 import hashlib
 import os.path
 from pathlib import Path
+import logging
 
 
 def check_exists(uploads, name, digest):
@@ -16,18 +17,21 @@ def check_exists(uploads, name, digest):
 
 
 def add_upload(resourcetype, uploads, coap, name, content):
-    resourcedir = Path('~/Sandbox/ota-resources/')
+    resourcedir = '../ota-resources/'
     m = hashlib.sha1(content).hexdigest()[:16]
     if check_exists(uploads, name, m):
         return None
 
-    if resourcetype == "signed manifest":
+    if resourcetype == "signed_manifest":
+        logging.debug("uploading signed manifest")
         with open(os.path.join(resourcedir, 'signed-man', name), 'wb') as f:
             f.write(content)
+            logging.debug("content is {}".format(content))
         res = ResourceFile(Path(os.path.join(resourcedir, 'signed-man', name)),
                           os.path.join('/f/man', m), m)
+        logging.debug("res is {}".format(res))
 
-    if resourcetype == "public key":
+    if resourcetype == "public_key":
         with open(os.path.join(resourcedir, 'pubkeys', name), 'wb') as f:
             f.write(content)
         res = ResourceFile(Path(os.path.join(resourcedir, 'pubkeys', name)),

@@ -14,3 +14,4 @@ yarl==1.2.4
 cbor
 ed25519
 pyasn1
+netifaces

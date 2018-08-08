@@ -10,6 +10,7 @@ import os
 import os.path
 import time
 import uuid
+import netifaces
 
 import ed25519
 from pyasn1.type import univ
@@ -114,7 +115,10 @@ def _get_bin_hash(filename):
 
 def main(binary, version):
     
-    uri = "coap://[2002:8d16:1b8e:28:141:22:28:91]/" + binary.url
+    addrs = netifaces.ifaddresses('eth0')
+    ipv6_add = addrs[netifaces.AF_INET6][0]['addr']
+    uri = "coap://[" + ipv6_add + "]/" + binary.url
+    print("url where binary lives is set as: " + uri)
     filename = str(binary.path)
 
     suit = [
@@ -122,7 +126,7 @@ def main(binary, version):
             None,
             _get_nonce(),
             _get_timestamp(),
-            None,
+            [],
             None,
             None,
             None,

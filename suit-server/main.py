@@ -14,6 +14,7 @@ import hashlib
 import logging
 from pathlib import Path
 import os.path
+import netifaces
 
 PROJECT_ROOT = '.'
 
@@ -68,7 +69,7 @@ def _get_dyn_resources():
 @asyncio.coroutine
 def init(loop, app):
     srv = yield from loop.create_server(app.make_handler(),
-                                        'localhost', 4000)
+                                        '0.0.0.0', 80)
     return srv
 
 
@@ -110,6 +111,9 @@ if __name__ == "__main__":
     loop.run_until_complete(init(loop, app))
 
     print("Server started")
+    addrs = netifaces.ifaddresses('eth0')
+    ipv6_add = addrs[netifaces.AF_INET6][0]['addr']
+    logging.debug("Server IPv6 address is: {}".format(ipv6_add))
     try:
         loop.run_forever()
     except KeyboardInterrupt:

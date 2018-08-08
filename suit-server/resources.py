@@ -43,6 +43,9 @@ def add_upload(resourcetype, uploads, coap, name, content):
 
 
 def add_file_resource(coap, fw):
+    print("added resource from " + str(fw.path))
+    print("added resource at " + str(fw.url))
+    print("digest of resource is " + str(fw.digest))
     coap.add_resource(('f', fw.digest),
                       FileResource(fw.path))
 

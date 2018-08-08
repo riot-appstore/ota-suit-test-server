@@ -5,6 +5,7 @@ from aiohttp import web
 import aiocoap
 import aiohttp_jinja2
 from multidict import MultiDict
+import sys
 
 import logging
 
@@ -84,18 +85,18 @@ async def upload_signed_manifest(request):
 async def ota_deploy(request):
     data = await request.post()
     target = data['target']
-    logging.info("CoAP send requested with {} to {}".format(digest, target))
-    with request.app['dyn_resources']['builds'].binary.path.open('rb') as f:
+    logging.info("CoAP send requested uploaded manifest to {}".format(target))
+    with request.app['dyn_resources']['signed_manifests'][0].path.open('rb') as f:
         content = f.read()
 
     protocol = await aiocoap.Context.create_client_context()
-    request = aiocoap.Message(code=aiocoap.POST, uri=target, payload=content)
+    deployrequest = aiocoap.Message(code=aiocoap.POST, uri=target, payload=content)
     try:
-        await protocol.request(request).response
+        await protocol.request(deployrequest).response
     except Exception as e:
         logging.warning("Error sending coap request: ".format(e))
         return web.Response(text="Error sending file {}"
-                                 " to target {}".format(request.app['dyn_resources']['builds'][0].path.name,
+                                 " to target {}".format(request.app['dyn_resources']['signed_manifests'][0].path.name,
                                                         target))
-    return web.Response(text="Sent file {} to target {}".format(request.app['dyn_resources']['builds'][0].path.name,
+    return web.Response(text="Sent file {} to target {}".format(request.app['dyn_resources']['signed_manifests'][0].path.name,
                                                                 target))

@@ -1,0 +1,20 @@
+# include module specific includes
+INCLUDES += -I$(RIOTCPU)/cortexm_common/include
+INCLUDES += -I$(RIOTCPU)/cortexm_common/include/vendor
+
+# Configure bootloader and slot lengths
+RIOTBOOT_SLOT0_SIZE ?= 0x1000
+RIOTBOOT_FW_SLOT_SIZE ?= $(shell printf "0x%x" $$((($(ROM_LEN:%K=%*1024)-$(RIOTBOOT_SLOT0_SIZE)) / 2 )))
+RIOTBOOT_FW_SLOT_SIZE := $(RIOTBOOT_FW_SLOT_SIZE)
+
+ROM_OFFSET ?= 0
+
+ifneq (4, $(words $(ROM_START_ADDR) $(RAM_START_ADDR) $(ROM_LEN) $(RAM_LEN)))
+  $(error Missing cpu variables ROM_START_ADDR, RAM_START_ADDR, ROM_LEN, RAM_LEN)
+endif
+
+LINKFLAGS += $(LINKFLAGPREFIX)--defsym=_rom_offset=$(ROM_OFFSET)
+LINKFLAGS += $(LINKFLAGPREFIX)--defsym=_rom_start_addr=$(ROM_START_ADDR)
+LINKFLAGS += $(LINKFLAGPREFIX)--defsym=_ram_start_addr=$(RAM_START_ADDR)
+LINKFLAGS += $(LINKFLAGPREFIX)--defsym=_rom_length=$(ROM_LEN)
+LINKFLAGS += $(LINKFLAGPREFIX)--defsym=_ram_length=$(RAM_LEN)

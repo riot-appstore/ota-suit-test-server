@@ -5,9 +5,9 @@ general development philosopy.
 
 ## Usage
 
-This package installs a script called `ota-suit-server`.
+This package installs an ota security microservice. Currently in PoC state.
 
 To run in Docker:
 
 docker build -t otaserver .
-docker run -p 4000:80 otaserver
+sh start.sh

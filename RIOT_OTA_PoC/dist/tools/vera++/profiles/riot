@@ -1,0 +1,5 @@
+# This file defines the set of scripts (rules) and parameters
+# for being close to the RIOT coding style
+
+rule=L004
+parameter=max-line-length=80

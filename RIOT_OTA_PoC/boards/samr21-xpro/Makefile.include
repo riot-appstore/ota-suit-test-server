@@ -1,0 +1,12 @@
+# define the cpu used by SAMR21 Xplained Pro board
+export CPU = samd21
+export CPU_MODEL = samr21g18a
+
+# set edbg device type
+EDBG_DEVICE_TYPE = atmel_cm0p
+
+# configure riotboot slots
+export RIOTBOOT_SLOT0_SIZE ?= 0x1000
+export RIOTBOOT_FW_SLOT_SIZE ?= 0x1f800
+
+include $(RIOTMAKE)/boards/sam0.inc.mk

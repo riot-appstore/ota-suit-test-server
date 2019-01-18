@@ -5,13 +5,21 @@ from aiohttp import web
 import aiocoap
 import aiohttp_jinja2
 from multidict import MultiDict
+from utils import build_utility as b_util
+from subprocess import Popen, PIPE, STDOUT
 import sys
 
 import logging
 
 
-async def index(request):
-    response = aiohttp_jinja2.render_template('files.jinja2',
+async def app_index(request):
+    response = aiohttp_jinja2.render_template('app.jinja2',
+                                          request,
+                                          {'app_approved':request.app['app_approved']})
+    return response
+
+async def user_index(request):
+    response = aiohttp_jinja2.render_template('user.jinja2',
                                           request,
                                           {'app_approved':request.app['app_approved']})
     return response
@@ -41,7 +49,20 @@ async def upload_publickey(request):
     return web.Response(text='{} with digest {} stored'.format(res.path.name,
                                                                res.digest))
     
-async def download_flasher(request):
+async def flash_device(request):
+
+
+    # `make` the basic OTA CoAP application using the user's public key
+    b_util.execute_makefile('/RIOT/examples/suit_updater', 'samr21-xpro', 'suit_updater', '$(date +%s)')
+
+    # cut down the RIOT repo
+
+    # zip the file
+
+    # send to the browser extention for flashing
+
+
+
     with request.app['dyn_resources']['flasher_paks'][0].path.open('rb') as f:
         data = f.read()
     hdrs = MultiDict({'Content-Disposition':

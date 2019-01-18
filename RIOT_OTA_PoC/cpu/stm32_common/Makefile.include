@@ -1,0 +1,34 @@
+# export the CPU family so we can differentiate between them in the code
+FAM = $(shell echo $(CPU_FAM) | tr 'a-z-' 'A-Z_')
+export CFLAGS += -DCPU_FAM_$(FAM)
+
+# include common periph module
+USEMODULE += periph_common
+
+# include stm32 common functions and stm32 common periph drivers
+USEMODULE += stm32_common stm32_common_periph
+
+# flashpage and eeprom periph implementations share flash lock/unlock functions
+# in periph_flash_common
+ifneq (,$(filter periph_flashpage periph_eeprom,$(FEATURES_REQUIRED)))
+  FEATURES_REQUIRED += periph_flash_common
+endif
+
+# For stm32 cpu's we use the stm32_common.ld linker script
+export LINKFLAGS += -L$(RIOTCPU)/stm32_common/ldscripts
+LINKER_SCRIPT ?= stm32_common.ld
+
+# export the common include directory
+export INCLUDES += -I$(RIOTCPU)/stm32_common/include
+
+include $(RIOTCPU)/stm32_common/stm32_mem_lengths.mk
+
+info-stm32:
+	@$(COLOR_ECHO) "CPU: $(CPU_MODEL)"
+	@$(COLOR_ECHO) "\tPin count:\t$(STM32_PINCOUNT)"
+	@$(COLOR_ECHO) "\tROM size:\t$(ROM_LEN)"
+	@$(COLOR_ECHO) "\tRAM size:\t$(RAM_LEN)"
+
+ifneq (,$(CCMRAM_LEN))
+  LINKFLAGS += $(LINKFLAGPREFIX)--defsym=_ccmram_length=$(CCMRAM_LEN)
+endif

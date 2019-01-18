@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <link rel="stylesheet" type = text/css href="static/styles.css">
+    </head>
+
+    <body>
+    
+        <!-- User profile section - for key management -->
+        <div style="background-color:dodgerblue" class="page">
+            <h1>User Page</h1>
+            <form action="/download_keygen" method="get" class="section">
+                <input type="submit" value="Download keygen">
+            </form>
+            <form action="/upload_publickey" method="post" class="section" enctype="multipart/form-data">
+                <input name="public_key" type="file"/>
+                <input type="submit" value="Upload public key"/>
+            </form>
+            <form action="/flash_device" method="get" class="section"> 
+                <input type="submit" value="Flash device">
+            </form>
+        </div>
+
+    </body>
+</html>

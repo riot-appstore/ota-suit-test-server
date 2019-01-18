@@ -69,7 +69,8 @@ def _get_dyn_resources():
 @asyncio.coroutine
 def init(loop, app):
     srv = yield from loop.create_server(app.make_handler(),
-                                        '0.0.0.0', 80)
+                                        '0.0.0.0', 8080)
+				       #'localhost', 80)
     return srv
 
 
@@ -112,6 +113,7 @@ if __name__ == "__main__":
 
     print("Server started")
     addrs = netifaces.ifaddresses('eth0')
+    #addrs = netifaces.ifaddresses('wlp4s0')
     ipv6_add = addrs[netifaces.AF_INET6][0]['addr']
     logging.debug("Server IPv6 address is: {}".format(ipv6_add))
     try:

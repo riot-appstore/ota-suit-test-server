@@ -198,8 +198,8 @@ def execute_makefile(app_build_dir, board, app_name, app_ver):
     elffile = app_outfile_path(bindir, app_name, 'elf')
 
     cmd = ["make",
-           "-C", "/RIOT/examples/suit_updater", # work within app_build_dir
-          # "-C", app_build_dir, # work within app_build_dir
+           #"-C", "/RIOT/examples/suit_updater", # work within app_build_dir
+           "-C", app_build_dir, # work within app_build_dir
            "BOARD=%s" % board,
            "BINDIRBASE=%s" % bindirbase,
            "ELFFILE=%s" % elffile,
@@ -210,8 +210,12 @@ def execute_makefile(app_build_dir, board, app_name, app_ver):
   #  cmd = ["make","-C /home/danielpetry/Sandbox/RIOT_OTA_PoC/examples/suit_updater BOARD=samr21-xpro APP_VER=$(date +%s) -j4 clean riotboot"]
     logging.debug('make: %s', cmd)
 
-    subprocess.call(cmd)
-    process = Popen(cmd,  stdout=PIPE, stderr=STDOUT)
+    #subprocess.call(cmd)
+    process = Popen(cmd,  stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+    #print("printing process.communicate()[0]")
+    #print(process.communicate()[0])
+    #print("END")
+    #print(type(process.communicate()[0]))
     return process.communicate()[0]
 
 

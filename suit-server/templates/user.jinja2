@@ -1,6 +1,12 @@
 <html>
     <head>
         <link rel="stylesheet" type = text/css href="static/styles.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="static/js/bootstrap.min.js"></script>
+        <script src="static/js/main.js"></script>
+        <script src="static/js/browser-integration.js"></script>
+        <script src="static/js/dialogs.js"></script>
+        <script src="static/js/webusb-autodetect.js"></script>
     </head>
 
     <body>
@@ -15,8 +21,8 @@
                 <input name="public_key" type="file"/>
                 <input type="submit" value="Upload public key"/>
             </form>
-            <form action="/flash_device" method="get" class="section"> 
-                <input type="submit" value="Flash device">
+            <form class="section">
+                <button id="flasher-download-button" type="button" class="btn btn-primary" onclick="download_example()">Prepare device</button>
             </form>
         </div>
 

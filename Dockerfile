@@ -125,6 +125,7 @@ RUN chown -R ${APP_USER} /home/${APP_USER}
 RUN chown -R ${APP_USER} /raw
 
 ADD ./RIOT_OTA_PoC /RIOT
+ADD ./RIOT_OTA_PoC_stripped /RIOT_stripped
 #RUN chown -R ${APP_USER} /RIOT
 #
 

@@ -40,6 +40,14 @@ window.onbeforeunload = function (event) {
 $(window).on("load", function() {
 
     $body = $('body');
+    document.getElementById('buttonid').addEventListener('click', openDialog);
+    function openDialog() {
+        document.getElementById('fileid').click();
+    }
+    document.getElementById('fileid').addEventListener('change', submitForm);
+    function submitForm() {
+        document.getElementById('formid').submit();
+    }
 
  //   if (isFirefox) {
  //       var autodetectButton1 = document.getElementById('examplesTab_autodetectButton');

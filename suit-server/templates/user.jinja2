@@ -17,9 +17,9 @@
             <form action="/download_keygen" method="get" class="section">
                 <input type="submit" value="Download keygen">
             </form>
-            <form action="/upload_publickey" method="post" class="section" enctype="multipart/form-data">
-                <input name="public_key" type="file"/>
-                <input type="submit" value="Upload public key"/>
+            <form id='formid' action="/upload_publickey" method="post" class="section" enctype="multipart/form-data">
+                <input id='fileid' type='file' name='public_key' hidden/>
+                <input id='buttonid' type='button' value='Upload public key' /> 
             </form>
             <form class="section">
                 <button id="flasher-download-button" type="button" class="btn btn-primary" onclick="download_example()">Prepare device</button>

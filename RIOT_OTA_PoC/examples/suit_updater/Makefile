@@ -78,7 +78,7 @@ else
 endif
 
 $(RIOTBUILD_CONFIG_HEADER_C): keys.h
-keys.h: $(RIOTTOOLS)/firmware/pub.key
+keys.h: /app2/ota-resources/pubkeys/pub.key
 	cp $< pubkey
 	xxd -i pubkey $@
 	rm pubkey

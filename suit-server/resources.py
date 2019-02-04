@@ -11,8 +11,8 @@ def check_exists(uploads, name, digest):
     for upload in uploads:
         if upload.digest == digest:
             return True
-        if upload.path.name == name:
-            return True
+      #  if upload.path.name == name:
+      #      return True
     return False
 
 

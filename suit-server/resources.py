@@ -23,7 +23,7 @@ def add_upload(resourcetype, uploads, coap, name, content):
         return None
 
     if resourcetype == "signed_manifest":
-        logging.debug("uploading signed manifest")
+        logging.debug("adding signed manifest to resources")
         with open(os.path.join(resourcedir, 'signed-man', name), 'wb') as f:
             f.write(content)
             logging.debug("content is {}".format(content))
@@ -32,11 +32,22 @@ def add_upload(resourcetype, uploads, coap, name, content):
         logging.debug("res is {}".format(res))
 
     if resourcetype == "public_key":
+        logging.debug("adding public key to resources")
         with open(os.path.join(resourcedir, 'pubkeys', name), 'wb') as f:
             f.write(content)
+            logging.debug("content is {}".format(content))
         res = ResourceFile(Path(os.path.join(resourcedir, 'pubkeys', name)),
                           os.path.join('/f/pk', m), m)
+        logging.debug("res is {}".format(res))
         
+    if resourcetype == "build":
+        logging.debug("adding build to resources")
+        with open(os.path.join(resourcedir, 'builds', name), 'wb') as f:
+            f.write(content)
+        res = ResourceFile(Path(os.path.join(resourcedir, 'builds', name)),
+                          os.path.join('/f/pk', m), m)
+        logging.debug("res is {}".format(res))
+
     add_file_resource(coap, res)
     uploads.append(res)
     return res

@@ -44,6 +44,26 @@ APPLICATION_CACHE_DIR = os.path.join(PROJECT_ROOT_DIR, config.APPLICATION_CACHE_
 
 
 #def main(argv):
+def build_image(board, app_name, using_cache, prefetching): 
+
+    app_path = os.path.join(PROJECT_ROOT_DIR, 'RIOT/examples',
+            app_name)
+
+    bin_dir = b_util.get_bindir(app_path, board)
+
+
+    before = time.time()
+    b_util.execute_makefile(app_path,
+                board, app_name, '$(date +%s)')
+
+        #pprint.pprint(build_result)
+    logging.debug('Build time: %f', time.time() - before)
+
+    build_result = b_util.file_as_base64(os.path.join(bin_dir,
+    'suit_updater-slot2.bin'))
+
+    return build_result
+
 def build(board, source_app_name, using_cache, prefetching): 
 
     build_result = get_build_result_template()

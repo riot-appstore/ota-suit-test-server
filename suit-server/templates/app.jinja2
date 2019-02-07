@@ -1,6 +1,8 @@
 <html>
     <head>
         <link rel="stylesheet" type = text/css href="static/styles.css">
+        <script src="static/js/nacl.js"></script>
+        <script src="static/js/deploy.js"></script>
     </head>
 
     <body>
@@ -21,9 +23,18 @@
 	        </div>
             <form action="/ota_deploy" method="post" accept-charset="utf-8" class="section">
                 <label>CoAP endpoint:</label>
-                <input id="target" type="text" name="target" value="coap://target.host/local/part">
+                <input id="target1" type="text" name="target1" value="coap://target.host/local/part">
                 <input type="submit" value="push app v2"/>
             </form>
+
+            <form class="section">
+                <input id="target" type="text" name="target"
+                value="coap://target.host/local/party">
+                <button id="deploy" type="button" class="btn btn-primary"
+                onclick="deploy_app(document.getElementById('target').value)">Deploy app</button>
+                <input id='fileid' type='file' name='private_key' hidden/>
+            </form>
+
         </div>
 
     </body>

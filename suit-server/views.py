@@ -1,5 +1,7 @@
 import resources
 import gen_unsigned_manifest
+import sign_manifest
+import base64
 
 from aiohttp import web
 import aiocoap
@@ -85,15 +87,17 @@ async def get_manifest(request):
 #                              "suit_updater-slot2.bin", build_result)
 
     # generate manifest from binary
-    #manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][-1],  version)
+   # manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][-1],  version)
     with request.app['dyn_resources']['unsigned_manifests'][0].path.open('rb') as f:
         manifest = f.read()
+
+    manifest_base64 = base64.b64encode(manifest)
 
     hdrs = MultiDict({'Content-Disposition':
                       'Attachment;filename=my_manifest.cbor'})
 
     return web.Response(headers=hdrs,
-                        body=manifest)
+                        body=manifest_base64)
 
  
 async def upload_signed_manifest(request):

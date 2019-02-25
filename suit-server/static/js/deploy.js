@@ -63,8 +63,15 @@ function get_manifest(target_addr, key) {
 
             // ask for the key
             enc = new TextEncoder();
+            var unsigned_manifest_bstr = Buffer.from(unsigned_manifest, 'base64').toString('binary');
+            var len = unsigned_manifest_bstr.length;
+            console.log("unsigned manifest binary string length is: " + len);
+            var unsigned_manifest_array = new Uint8Array(len);
+            for (var i = 0; i < len; i++)        {
+                unsigned_manifest_array[i] = unsigned_manifest_bstr.charCodeAt(i);
+            }
             //arguments are both a uint8 array
-            signed_manifest = nacl.sign(enc.encode(unsigned_manifest), key);
+            signed_manifest = nacl.sign(unsigned_manifest_array, key);
             upload_manifest(signed_manifest, target_addr);
        }
     };

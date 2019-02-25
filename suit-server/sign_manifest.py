@@ -130,6 +130,24 @@ def main():
     args.output.write(cbor.dumps(sign))
     return 0
 
+## payload sign process
+#    protected = {4: kid, 1: -8}
+#    sig = [
+#            "Signature1",
+#            cbor.dumps(protected),
+#            b'',
+#            payload
+#            ]
+#    signature = key.sign(cbor.dumps(sig))
+#
+#    sign =  [
+#            cbor.dumps(protected),
+#            {},
+#            payload,
+#            signature
+#            ]
+#    args.output.write(cbor.dumps(sign))
+
 
 if __name__ == "__main__":
     main()

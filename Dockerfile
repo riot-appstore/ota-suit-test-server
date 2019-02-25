@@ -90,7 +90,7 @@ RUN wget -q https://cmake.org/files/v3.10/cmake-3.10.0.tar.gz -O- \
 
 # Install MIPS binary toolchain
 RUN mkdir -p /opt && \
-        wget -q http://codescape-mips-sdk.imgtec.com/components/toolchain/2016.05-03/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz -O- \
+        wget -q https://codescape.mips.com/components/toolchain/2016.05-03/Codescape.GNU.Tools.Package.2016.05-03.for.MIPS.MTI.Bare.Metal.CentOS-5.x86_64.tar.gz -O- \
         | tar -C /opt -xz
 
 ENV PATH $PATH:/opt/mips-mti-elf/2016.05-03/bin
@@ -102,7 +102,7 @@ RUN mkdir -p /opt && \
         | tar -C /opt -xz
 
 # HACK download arch linux' flex dynamic library
-RUN wget -q https://sgp.mirror.pkgbuild.com/core/os/x86_64/flex-2.6.4-1-x86_64.pkg.tar.xz -O- \
+RUN wget -q https://sgp.mirror.pkgbuild.com/core/os/x86_64/flex-2.6.4-2-x86_64.pkg.tar.xz -O- \
         | tar -C / -xJ usr/lib/libfl.so.2.0.0
 RUN ldconfig
 ENV PATH $PATH:/opt/gnu-mcu-eclipse/riscv-none-gcc/7.2.0-2-20180111-2230/bin

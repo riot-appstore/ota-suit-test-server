@@ -63,7 +63,7 @@ function get_manifest(target_addr, key) {
 
             // ask for the key
             enc = new TextEncoder();
-            //make key into a uint8 array
+            //arguments are both a uint8 array
             signed_manifest = nacl.sign(enc.encode(unsigned_manifest), key);
             upload_manifest(signed_manifest, target_addr);
        }

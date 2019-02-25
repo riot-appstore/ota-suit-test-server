@@ -85,7 +85,9 @@ async def get_manifest(request):
 #                              "suit_updater-slot2.bin", build_result)
 
     # generate manifest from binary
-    manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][-1],  version)
+    #manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][-1],  version)
+    with request.app['dyn_resources']['unsigned_manifests'][0].path.open('rb') as f:
+        manifest = f.read()
 
     hdrs = MultiDict({'Content-Disposition':
                       'Attachment;filename=my_manifest.cbor'})

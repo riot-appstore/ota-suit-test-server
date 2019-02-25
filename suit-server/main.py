@@ -26,6 +26,7 @@ def _get_dyn_resources():
     builds = []
     flasher_paks = []
     keygens = []
+    unsigned_manifests = []
     for child in p.joinpath('pubkeys/').iterdir():
         with child.open('rb') as f:
             m = hashlib.sha1(f.read()).hexdigest()[:16]
@@ -56,12 +57,19 @@ def _get_dyn_resources():
             m = hashlib.sha1(f.read()).hexdigest()[:16]
             url = os.path.join('f', m)
             keygens.append(resources.ResourceFile(child, url, m))
+    for child in p.joinpath('unsigned_manifests').iterdir():
+        with child.open('rb') as f:
+            m = hashlib.sha1(f.read()).hexdigest()[:16]
+            url = os.path.join('f', m)
+            unsigned_manifests.append(resources.ResourceFile(child, url, m))
 
     resourcedict = {"public_keys": public_keys,
             "signed_manifests": signed_mans,
             "builds": builds,
             "flasher_paks": flasher_paks,
-            "keygens": keygens}
+            "keygens": keygens,
+            "unsigned_manifests": unsigned_manifests}
+
     return resourcedict
 
 
@@ -104,6 +112,8 @@ if __name__ == "__main__":
     for dpt in app['dyn_resources']['flasher_paks']:
         resources.add_file_resource(coap, dpt)
     for dpt in app['dyn_resources']['keygens']:
+        resources.add_file_resource(coap, dpt)
+    for dpt in app['dyn_resources']['unsigned_manifests']:
         resources.add_file_resource(coap, dpt)
 
     routes.setup_routes(app, PROJECT_ROOT)

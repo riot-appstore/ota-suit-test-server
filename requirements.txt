@@ -15,3 +15,4 @@ cbor
 ed25519
 pyasn1
 netifaces
+cryptography

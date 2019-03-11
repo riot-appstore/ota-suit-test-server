@@ -1,6 +1,5 @@
 import resources
-import gen_unsigned_manifest
-import sign_manifest
+#import gen_unsigned_manifest
 import base64
 
 from aiohttp import web
@@ -13,6 +12,8 @@ import sys
 from common.BuildResult import get_build_result_template
 import build_example as b
 import ast
+from subprocess import call, Popen
+import os
 
 import json
 from requests.http_prints import print_signed_result, print_bad_request
@@ -78,19 +79,21 @@ async def flash_device(request):
 async def get_manifest(request):
     version = 2
 
-#    # build app
-#    build_result = b.build_image('samr21-xpro', request.query['app_name'], False, False)
-#
-#    # add to resources
-#    res = resources.add_upload("build", request.app['dyn_resources']['builds'],
-#                              request.app['coap'],
-#                              "suit_updater-slot2.bin", build_result)
+    #manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][0],  version)
+    mf_gen_dir = "/app/suit-manifest-generator"
+    #os.chdir(mf_gen_dir)
+    ##rtn = call("python3 " + mf_gen_dir + "/encode.py " + mf_gen_dir + "/test1.json " +
+    ##        mf_gen_dir + "/test-out.cbor", shell=True)
+    #rtn = call("python3 ./encode.py ./test1.json ./test-out.cbor", shell=True)
+    
+    process = Popen("python3 ./encode.py ./test1.json ./test-out.cbor", shell=True,
+            cwd=mf_gen_dir)
+    process.communicate() #wait for file to be created
 
-    # generate manifest from binary
-   # manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][-1],  version)
-    with request.app['dyn_resources']['unsigned_manifests'][0].path.open('rb') as f:
-        manifest = f.read()
+    #logging.debug("return code from manifest gen: {}".format(rtn))
 
+    with open("{}/test-out.cbor".format(mf_gen_dir), 'rb') as mf_file:
+        manifest = mf_file.read()
     manifest_base64 = base64.b64encode(manifest)
 
     hdrs = MultiDict({'Content-Disposition':

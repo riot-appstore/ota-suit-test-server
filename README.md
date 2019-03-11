@@ -11,3 +11,6 @@ To run in Docker:
 
 docker build -t otaserver .
 sh start.sh
+cd app
+cd suit-server
+python main.py

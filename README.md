@@ -10,4 +10,7 @@ This package installs a script called `ota-suit-server`.
 To run in Docker:
 
 docker build -t otaserver .
-docker run -p 4000:80 otaserver
+docker run -it --entrypoint="/bin/bash" -v $(pwd):/app -p 4000:80 otaserver
+pip install --trusted-host pypi.python.org -r requirements.txt
+cd app/suit-server
+python main.py

@@ -11,6 +11,7 @@ To run in Docker:
 
 docker build -t otaserver .
 docker run -it --entrypoint="/bin/bash" -v $(pwd):/app -p 4000:80 otaserver
+cd app
 pip install --trusted-host pypi.python.org -r requirements.txt
-cd app/suit-server
+cd suit-server
 python main.py

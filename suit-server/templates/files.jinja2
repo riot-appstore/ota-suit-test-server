@@ -4,24 +4,27 @@
     </head>
 
     <body>
-    
         <!-- User profile section - for key management -->
+        <!--
         <div style="background-color:dodgerblue" class="page">
             <h1>User key management</h1>
-            <form action="/download_keygen" method="get" class="section">
-                <input type="submit" value="Download keygen and signer">
-            </form>
             <form action="/upload_publickey" method="post" class="section" enctype="multipart/form-data">
                 <input name="public_key" type="file"/>
                 <input type="submit" value="Replace your public key"/>
             </form>
         </div>
+        -->
 
         <!-- App page section -->
         <div style="background-color:darkturquoise" class="page">
-            <h1>Awesome IoT app page</h1>
+            <h1>SUIT deployment server</h1>
+            <!--
             <form action="/download_flasher" method="get" class="section"> 
                 <input type="submit" value="Download OTA bootloader and app v1 flasher">
+            </form>
+            -->
+            <form action="/download_keygen" method="get" class="section">
+                <input type="submit" value="Download keygen and signer">
             </form>
 	    <div class="section">
 	    <p style="font-weight:bold">Approve the application for your node</p>

@@ -1,11 +1,14 @@
 import resources
-import gen_unsigned_manifest
+#import gen_unsigned_manifest
 
 from aiohttp import web
 import aiocoap
 import aiohttp_jinja2
 from multidict import MultiDict
 import sys
+from subprocess import call, Popen
+import os
+
 
 import logging
 
@@ -54,7 +57,21 @@ async def get_manifest(request):
     data = await request.post()
     version = 2
 
-    manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][0],  version)
+    #manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][0],  version)
+    mf_gen_dir = "/app/suit-manifest-generator"
+    #os.chdir(mf_gen_dir)
+    ##rtn = call("python3 " + mf_gen_dir + "/encode.py " + mf_gen_dir + "/test1.json " +
+    ##        mf_gen_dir + "/test-out.cbor", shell=True)
+    #rtn = call("python3 ./encode.py ./test1.json ./test-out.cbor", shell=True)
+    
+    process = Popen("python3 ./encode.py ./test1.json ./test-out.cbor", shell=True,
+            cwd=mf_gen_dir)
+    process.communicate() #wait for file to be created
+
+    #logging.debug("return code from manifest gen: {}".format(rtn))
+
+    with open("{}/test-out.cbor".format(mf_gen_dir), 'rb') as mf_file:
+        manifest = mf_file.read()
 
     hdrs = MultiDict({'Content-Disposition':
                       'Attachment;filename=my_manifest.cbor'})

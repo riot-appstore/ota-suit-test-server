@@ -62,16 +62,17 @@ function get_manifest(target_addr, key) {
             }
 
             // ask for the key
-            enc = new TextEncoder();
-            var unsigned_manifest_bstr = Buffer.from(unsigned_manifest, 'base64').toString('binary');
+            //enc = new TextEncoder();
+            //var unsigned_manifest_bstr = Buffer.from(unsigned_manifest, 'base64').toString('binary');
+            
             // convert bytestring to binary blob/buffer
-             mf_dec = cbor.decode(unsigned_manifest)
+             mf_dec = CBOR.decode(atob(unsigned_manifest))
              protected = {4: "test", 1: -8}
-             sig = ["Signature1", cbor.encode(protected), , unsigned_manifest_bstr]
-             sig_arr = cbor.encode(sig) //THIS GIVES THE RIGHT RESULT so far. THE KEY IS RIGHT TOO
+             sig = ["Signature1", CBOR.encode(protected), , unsigned_manifest_bstr]
+             sig_arr = CBOR.encode(sig) //THIS GIVES THE RIGHT RESULT so far. THE KEY IS RIGHT TOO
              signature = nacl.sign(sig_arr, key) //THIS DOESN'T GIVE THE RIGHT RESULT
-             signed_manifest = [cbor.encode(protected), , unsigned_manifest_bstr, sig]
-             signed_manifest_enc = cbor.encode(signed_manifest)
+             signed_manifest = [CBOR.encode(protected), , unsigned_manifest_bstr, sig]
+             signed_manifest_enc = CBOR.encode(signed_manifest)
              signed_manifest_enc_b64 = btoa(signed_manifest_enc)
              
              

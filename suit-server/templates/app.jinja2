@@ -11,6 +11,7 @@
         <!-- App page section -->
         <div style="background-color:darkturquoise" class="page">
             <h1>App Page</h1>
+            <!--
 	        <div class="section">
 	            <p style="font-weight:bold">Approve the application for your node</p>
                 <form action="/get_manifest"  method="get">
@@ -27,10 +28,11 @@
                 <input id="target1" type="text" name="target1" value="coap://target.host/local/part">
                 <input type="submit" value="push app v2"/>
             </form>
+            -->
 
             <form class="section">
                 <input id="target" type="text" name="target"
-                value="coap://target.host/local/party">
+                value="coap://target.host/local/foo">
                 <button id="deploy" type="button" class="btn btn-primary"
                 onclick="deploy_app(document.getElementById('target').value)">Deploy app</button>
                 <input id='fileid' type='file' name='private_key' hidden/>

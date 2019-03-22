@@ -76,8 +76,8 @@ function get_manifest(target_addr, key) {
             
             // convert bytestring to binary blob/buffer
              mf_dec = CBOR.decode(_base64ToArrayBuffer(unsigned_manifest))
-             protected = {4: "test", 1: -8}
-             sig = ["Signature1", CBOR.encode(protected), , mf_dec]
+             protected_fields = new Uint8Array(CBOR.encode({4: "test", 1: -8}));
+             sig = ["Signature1", protected_fields, , mf_dec]
              //var sig_z = [];
              //for(var i = 0; i < sig.length; i++){
              //    var bytes = [];
@@ -88,9 +88,9 @@ function get_manifest(target_addr, key) {
              //}
              sig_arr = new Uint8Array(CBOR.encode(sig))
              signature = nacl.sign(sig_arr, key)
-             signed_manifest = [CBOR.encode(protected), , mf_dec, sig]
-             signed_manifest_enc = CBOR.encode(signed_manifest)
-             signed_manifest_enc_b64 = btoa(signed_manifest_enc)
+             signed_manifest = [protected_fields, , mf_dec, signature]
+             signed_manifest_enc = new Uint8Array(CBOR.encode(signed_manifest));
+             //signed_manifest_enc_b64 = btoa(signed_manifest_enc)
              
              
             //var len = unsigned_manifest_bstr.length;
@@ -101,7 +101,7 @@ function get_manifest(target_addr, key) {
             //}
             ////arguments are both a uint8 array
             //signed_manifest = nacl.sign(unsigned_manifest_array, key);
-            upload_manifest(signed_manifest_enc_b64, target_addr);
+            upload_manifest(signed_manifest_enc, target_addr);
        }
     };
 

@@ -23,7 +23,7 @@ import pprint
 #   alternative: add path to rapstore_backend to the PYTHONPATH environment variable, but this includes one more step
 #   which could be forget
 CUR_DIR = os.path.abspath(os.path.dirname(__file__))
-PROJECT_ROOT_DIR = os.path.abspath(os.path.join(__file__, "../../.."))
+PROJECT_ROOT_DIR = os.path.abspath(os.path.join(__file__, "../../../.."))
 #PROJECT_ROOT_DIR = os.path.normpath(os.path.join(CUR_DIR, os.pardir))
 sys.path.append(PROJECT_ROOT_DIR)
 

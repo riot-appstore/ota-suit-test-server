@@ -10,7 +10,7 @@ from subprocess import Popen, PIPE, STDOUT
 import subprocess
 import sys
 from common.BuildResult import get_build_result_template
-import build_example as b
+from utility import build as b
 import ast
 from subprocess import call, Popen
 import os

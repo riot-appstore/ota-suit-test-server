@@ -18,6 +18,8 @@ import sys
 import time
 from shutil import copytree, rmtree, copyfile
 import pprint
+from utility import config
+from utility import build_utility as b_util
 
 # append root of the python code tree to sys.apth so that imports are working
 #   alternative: add path to rapstore_backend to the PYTHONPATH environment variable, but this includes one more step
@@ -26,8 +28,6 @@ CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(__file__, "../../../.."))
 sys.path.append(PROJECT_ROOT_DIR)
 
-from utility import config
-from utility import build_utility as b_util
 
 LOGFILE = os.path.join(CUR_DIR, 'log', 'build_example.log')
 LOGFILE = os.environ.get('BACKEND_LOGFILE', LOGFILE)

@@ -22,6 +22,65 @@ from subprocess import Popen, PIPE, STDOUT
 import subprocess
 
 
+def _flasher_remove_unnecessary_boards(dest_path, board):
+    """Remove all unnecessary boards from `boards` directory."""
+    boards_dir = os.path.join(dest_path, 'boards')
+    for entry in os.listdir(boards_dir):
+        entry_path = os.path.join(boards_dir, entry)
+        if os.path.isfile(entry_path):
+            continue
+        if (entry in ('include', board)) or ('common' in entry):
+            continue
+
+        try:
+            rmtree(entry_path)
+        except Exception as e:
+            logging.error(str(e), exc_info=True)
+
+
+def _app_outfile_path(path, app_name, extension):
+    """Application outfile path with extension."""
+    filename = '%s.%s' % (app_name, extension)
+    return os.path.join(path, filename)
+
+
+def _get_bindirbase(app_build_dir):
+    return os.path.abspath(os.path.join(app_build_dir, "bin"))
+
+
+def _copy_file_with_parents(src, dst, ignore_no_src=False):
+    """Copy `src` to `dst` and create `dst` parents directories.
+
+    If `src` does not exist and `ignore_no_src` is set, do nothing.
+    """
+    if not os.path.isfile(src) and ignore_no_src:
+        return
+
+    dst_dir = os.path.dirname(dst)
+    create_directories(dst_dir)
+
+    copyfile(src, dst)
+
+
+def _create_riot_flasher(src_path, dest_path, board=None):
+    """Create a minimal RIOT repository to allow flashing.
+
+    If `board` is set, remove unused boards
+
+    Parameters
+    ----------
+    src_path: string
+        Path to riot repository you want to be stripped
+    dest_path: string
+        Path to store the stripped riot repository
+    board: string
+        Name of the board
+    """
+    copytree(src_path, dest_path)
+    if board:
+        _flasher_remove_unnecessary_boards(dest_path, board)
+
+
 def get_build_result_template():
 
     build_result = {
@@ -33,6 +92,7 @@ def get_build_result_template():
     }
 
     return build_result
+
 
 def generate_stripped_repo(app_build_dir, stripped_riot_dir, temp_dir, board, app_name):
     """
@@ -74,13 +134,13 @@ def generate_stripped_repo(app_build_dir, stripped_riot_dir, temp_dir, board, ap
     # Mandatory files
     _copy_file_with_parents(os.path.join(app_build_dir, "Makefile"),
                             os.path.join(app_copy_dir, "Makefile"))
-    _copy_file_with_parents(app_outfile_path(bin_dir, app_name, 'elf'),
-                            app_outfile_path(bin_copy_dir, app_name, 'elf'))
+    _copy_file_with_parents(_app_outfile_path(bin_dir, app_name, 'elf'),
+                            _app_outfile_path(bin_copy_dir, app_name, 'elf'))
     # Optional files
     optfiles = ('bin', 'hex')
     for optfile in optfiles:
-        src = app_outfile_path(bin_dir, app_name, optfile)
-        dst = app_outfile_path(bin_copy_dir, app_name, optfile)
+        src = _app_outfile_path(bin_dir, app_name, optfile)
+        dst = _app_outfile_path(bin_copy_dir, app_name, optfile)
         _copy_file_with_parents(src, dst, ignore_no_src=True)
 
     return stripped_repo_path
@@ -176,37 +236,25 @@ def create_directories(path):
             raise
 
 
-def app_outfile_path(path, app_name, extension):
-    """Application outfile path with extension."""
-    filename = '%s.%s' % (app_name, extension)
-    return os.path.join(path, filename)
-
-
 def execute_makefile_basic(app_build_dir, board, app_name, app_ver):
 
     # set ELFFILE the same way as RIOT Makefile.include (path to .hex file is extracted from this information)
     app_build_dir_abs_path = os.path.abspath(app_build_dir)
 
-    bindirbase = get_bindirbase(app_build_dir_abs_path)
+    bindirbase = _get_bindirbase(app_build_dir_abs_path)
     bindir = get_bindir(app_build_dir_abs_path, board)
-    elffile = app_outfile_path(bindir, app_name, 'elf')
+    elffile = _app_outfile_path(bindir, app_name, 'elf')
 
     cmd = ["make",
-           #"-C", "/RIOT/examples/suit_updater", # work within app_build_dir
            "-C", app_build_dir, # work within app_build_dir
            "BOARD=%s" % board,
            "BINDIRBASE=%s" % bindirbase,
            "ELFFILE=%s" % elffile]
-  #  cmd = ["make","-C /home/danielpetry/Sandbox/RIOT_OTA_PoC/examples/suit_updater BOARD=samr21-xpro APP_VER=$(date +%s) -j4 clean riotboot"]
     logging.debug('make: %s', cmd)
 
-    #subprocess.call(cmd)
     process = Popen(cmd,  stdout=PIPE, stderr=STDOUT, universal_newlines=True)
-    #print("printing process.communicate()[0]")
-    #print(process.communicate()[0])
-    #print("END")
-    #print(type(process.communicate()[0]))
     return process.communicate()[0]
+
 
 def execute_makefile(app_build_dir, board, app_name, app_ver):
     """
@@ -231,12 +279,11 @@ def execute_makefile(app_build_dir, board, app_name, app_ver):
     # set ELFFILE the same way as RIOT Makefile.include (path to .hex file is extracted from this information)
     app_build_dir_abs_path = os.path.abspath(app_build_dir)
 
-    bindirbase = get_bindirbase(app_build_dir_abs_path)
+    bindirbase = _get_bindirbase(app_build_dir_abs_path)
     bindir = get_bindir(app_build_dir_abs_path, board)
-    elffile = app_outfile_path(bindir, app_name, 'elf')
+    elffile = _app_outfile_path(bindir, app_name, 'elf')
 
     cmd = ["make",
-           #"-C", "/RIOT/examples/suit_updater", # work within app_build_dir
            "-C", app_build_dir, # work within app_build_dir
            "BOARD=%s" % board,
            "BINDIRBASE=%s" % bindirbase,
@@ -245,76 +292,17 @@ def execute_makefile(app_build_dir, board, app_name, app_ver):
            "-j4",
            "clean",
            "riotboot"]
-  #  cmd = ["make","-C /home/danielpetry/Sandbox/RIOT_OTA_PoC/examples/suit_updater BOARD=samr21-xpro APP_VER=$(date +%s) -j4 clean riotboot"]
     logging.debug('make: %s', cmd)
 
-    #subprocess.call(cmd)
     process = Popen(cmd,  stdout=PIPE, stderr=STDOUT, universal_newlines=True)
-    #print("printing process.communicate()[0]")
-    #print(process.communicate()[0])
-    #print("END")
-    #print(type(process.communicate()[0]))
     return process.communicate()[0]
-
-
-def get_bindirbase(app_build_dir):
-    return os.path.abspath(os.path.join(app_build_dir, "bin"))
 
 
 def get_bindir(app_build_dir, board):
 
     app_build_dir = os.path.abspath(app_build_dir)
 
-    bin_dir_base = get_bindirbase(app_build_dir)
+    bin_dir_base = _get_bindirbase(app_build_dir)
     bin_dir = os.path.join(bin_dir_base, board)
 
     return bin_dir
-
-
-def _copy_file_with_parents(src, dst, ignore_no_src=False):
-    """Copy `src` to `dst` and create `dst` parents directories.
-
-    If `src` does not exist and `ignore_no_src` is set, do nothing.
-    """
-    if not os.path.isfile(src) and ignore_no_src:
-        return
-
-    dst_dir = os.path.dirname(dst)
-    create_directories(dst_dir)
-
-    copyfile(src, dst)
-
-
-def _create_riot_flasher(src_path, dest_path, board=None):
-    """Create a minimal RIOT repository to allow flashing.
-
-    If `board` is set, remove unused boards
-
-    Parameters
-    ----------
-    src_path: string
-        Path to riot repository you want to be stripped
-    dest_path: string
-        Path to store the stripped riot repository
-    board: string
-        Name of the board
-    """
-    copytree(src_path, dest_path)
-    if board:
-        _flasher_remove_unnecessary_boards(dest_path, board)
-
-
-def _flasher_remove_unnecessary_boards(dest_path, board):
-    """Remove all unnecessary boards from `boards` directory."""
-    boards_dir = os.path.join(dest_path, 'boards')
-    for entry in os.listdir(boards_dir):
-        entry_path = os.path.join(boards_dir, entry)
-        if os.path.isfile(entry_path):
-            continue
-        if (entry in ('include', board)) or ('common' in entry):
-            continue
-
-        try:
-            rmtree(entry_path)
-        except Exception as e:
-            logging.error(str(e), exc_info=True)

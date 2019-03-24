@@ -22,6 +22,18 @@ from subprocess import Popen, PIPE, STDOUT
 import subprocess
 
 
+def get_build_result_template():
+
+    build_result = {
+        'cmd_output': '',
+        'board': None,
+        'application_name': 'application',
+        'output_archive': None,
+        'success': False
+    }
+
+    return build_result
+
 def generate_stripped_repo(app_build_dir, stripped_riot_dir, temp_dir, board, app_name):
     """
     Create stripped version of the riot repository and return the path to it

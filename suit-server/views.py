@@ -9,7 +9,6 @@ from multidict import MultiDict
 from subprocess import Popen, PIPE, STDOUT
 import subprocess
 import sys
-from common.BuildResult import get_build_result_template
 from utility import build as b
 import ast
 from subprocess import call, Popen

@@ -28,8 +28,6 @@ sys.path.append(PROJECT_ROOT_DIR)
 
 from config import config
 from utility import build_utility as b_util
-from utility.build_utility import create_directories 
-from common.BuildResult import get_build_result_template
 
 LOGFILE = os.path.join(CUR_DIR, 'log', 'build_example.log')
 LOGFILE = os.environ.get('BACKEND_LOGFILE', LOGFILE)
@@ -62,7 +60,7 @@ def build_image(board, app_name, using_cache, prefetching):
 
 def build(board, source_app_name, using_cache, prefetching): 
 
-    build_result = get_build_result_template()
+    build_result = b_util.get_build_result_template()
 
     app_path = os.path.join(PROJECT_ROOT_DIR, 'RIOT/examples',
             source_app_name)
@@ -78,7 +76,7 @@ def build(board, source_app_name, using_cache, prefetching):
     app_build_dir = os.path.join(app_build_parent_dir, app_name)
 
     temp_dir = b_util.get_temporary_directory(PROJECT_ROOT_DIR, ticket_id)
-    create_directories(temp_dir)
+    b_util.create_directories(temp_dir)
 
     build_result['application_name'] = app_name
 
@@ -87,7 +85,6 @@ def build(board, source_app_name, using_cache, prefetching):
     app_build_dir_abs_path = os.path.abspath(app_build_dir)
     bin_dir = b_util.get_bindir(app_build_dir_abs_path, board)
 
-    # if nothing found in cache, just build it
     replace_application_name(os.path.join(app_build_dir, 'Makefile'), app_name)
     before = time.time()
 

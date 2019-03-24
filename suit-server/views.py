@@ -6,17 +6,16 @@ from aiohttp import web
 import aiocoap
 import aiohttp_jinja2
 from multidict import MultiDict
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import call, Popen, PIPE, STDOUT
 import subprocess
 import sys
-from utility import build as b
 import ast
-from subprocess import call, Popen
 import os
-
 import json
-from utility.http_prints import print_signed_result, print_bad_request
 import logging
+
+from utility.http_prints import print_signed_result, print_bad_request
+from utility import build as b
 
 #CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 #PROJECT_ROOT_DIR = os.path.normpath(os.path.join(CUR_DIR, os.pardir))
@@ -80,16 +79,10 @@ async def get_manifest(request):
 
     #manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][0],  version)
     mf_gen_dir = "/app2/suit-manifest-generator"
-    #os.chdir(mf_gen_dir)
-    ##rtn = call("python3 " + mf_gen_dir + "/encode.py " + mf_gen_dir + "/test1.json " +
-    ##        mf_gen_dir + "/test-out.cbor", shell=True)
-    #rtn = call("python3 ./encode.py ./test1.json ./test-out.cbor", shell=True)
     
     process = Popen("python3 ./encode.py ./test1.json ./test-out.cbor", shell=True,
             cwd=mf_gen_dir)
     process.communicate() #wait for file to be created
-
-    #logging.debug("return code from manifest gen: {}".format(rtn))
 
     with open("{}/test-out.cbor".format(mf_gen_dir), 'rb') as mf_file:
         manifest = mf_file.read()

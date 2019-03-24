@@ -26,7 +26,7 @@ CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(__file__, "../../../.."))
 sys.path.append(PROJECT_ROOT_DIR)
 
-from config import config
+from utility import config
 from utility import build_utility as b_util
 
 LOGFILE = os.path.join(CUR_DIR, 'log', 'build_example.log')

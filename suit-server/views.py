@@ -15,7 +15,7 @@ from subprocess import call, Popen
 import os
 
 import json
-from requests.http_prints import print_signed_result, print_bad_request
+from utility.http_prints import print_signed_result, print_bad_request
 import logging
 
 #CUR_DIR = os.path.abspath(os.path.dirname(__file__))

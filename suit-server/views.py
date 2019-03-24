@@ -80,7 +80,7 @@ async def get_manifest(request):
     version = 2
 
     #manifest = gen_unsigned_manifest.main(request.app['dyn_resources']['builds'][0],  version)
-    mf_gen_dir = "/app/suit-manifest-generator"
+    mf_gen_dir = "/app2/suit-manifest-generator"
     #os.chdir(mf_gen_dir)
     ##rtn = call("python3 " + mf_gen_dir + "/encode.py " + mf_gen_dir + "/test1.json " +
     ##        mf_gen_dir + "/test-out.cbor", shell=True)

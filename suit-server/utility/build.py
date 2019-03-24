@@ -24,14 +24,10 @@ import pprint
 #   which could be forget
 CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(__file__, "../../../.."))
-#PROJECT_ROOT_DIR = os.path.normpath(os.path.join(CUR_DIR, os.pardir))
 sys.path.append(PROJECT_ROOT_DIR)
 
 from config import config
 from utility import build_utility as b_util
-#from utility import application_info_utility as a_util
-#from common.MyDatabase import MyDatabase
-#from common.ApplicationCache import ApplicationCache
 from utility.build_utility import create_directories 
 from common.BuildResult import get_build_result_template
 
@@ -67,23 +63,6 @@ def build_image(board, app_name, using_cache, prefetching):
 def build(board, source_app_name, using_cache, prefetching): 
 
     build_result = get_build_result_template()
-    #parser = init_argparse()
-
-    #try:
-    #    args = parser.parse_args(argv)
-
-    #except Exception as e:
-    #    build_result['cmd_output'] += str(e)
-    #    return
-
-    #board = args.board
-    ##application_id = args.application
-    #source_app_name = args.application
-    #using_cache = args.caching
-    #prefetching = args.prefetching
-
-
-   # application_cache = ApplicationCache(APPLICATION_CACHE_DIR)
 
     app_path = os.path.join(PROJECT_ROOT_DIR, 'RIOT/examples',
             source_app_name)
@@ -103,76 +82,36 @@ def build(board, source_app_name, using_cache, prefetching):
 
     build_result['application_name'] = app_name
 
-    #app_path = os.path.join(PROJECT_ROOT_DIR, a_util.get_application_path(db, application_id))
-
     copytree(app_path, app_build_dir)
 
     app_build_dir_abs_path = os.path.abspath(app_build_dir)
     bin_dir = b_util.get_bindir(app_build_dir_abs_path, board)
 
-    cached_binaries = False
-    #if using_cache:
+    # if nothing found in cache, just build it
+    replace_application_name(os.path.join(app_build_dir, 'Makefile'), app_name)
+    before = time.time()
 
-    #    cached_elffile_path = application_cache.get_entry(board, source_app_dir_name, '%s.elf' % source_app_name)
-    #    cached_hexfile_path = application_cache.get_entry(board, source_app_dir_name, '%s.hex' % source_app_name)
+    build_result['cmd_output'] += b_util.execute_makefile(app_build_dir,
+            board, app_name, '$(date +%s)')
 
-    #    if (cached_elffile_path is not None) or (cached_hexfile_path is not None):
-
-    #        cached_binaries = True
-
-    #        create_directories(bin_dir)
-
-    #        # copy files from cache in to bin_dir.
-    #        # Need to rename it because further steps expect given name based on ticketID
-    #        if cached_elffile_path is not None:
-    #            copyfile(cached_elffile_path, os.path.join(bin_dir, '%s.elf' % app_name))
-
-    #        if cached_hexfile_path is not None:
-    #            copyfile(cached_hexfile_path, os.path.join(bin_dir, '%s.hex' % app_name))
-
-    if not cached_binaries:
-        # if nothing found in cache, just build it
-        replace_application_name(os.path.join(app_build_dir, 'Makefile'), app_name)
-        before = time.time()
-
-        build_result['cmd_output'] += b_util.execute_makefile(app_build_dir,
-                board, app_name, '$(date +%s)')
-
-        #pprint.pprint(build_result)
-        logging.debug('Build time: %f', time.time() - before)
+    #pprint.pprint(build_result)
+    logging.debug('Build time: %f', time.time() - before)
 
     try:
 
-        if not prefetching:
-            stripped_repo_path = b_util.generate_stripped_repo(app_build_dir, PROJECT_ROOT_DIR, temp_dir, board, app_name)
+        stripped_repo_path = b_util.generate_stripped_repo(app_build_dir, PROJECT_ROOT_DIR, temp_dir, board, app_name)
 
-            archive_path = os.path.join(temp_dir, 'RIOT_stripped.tar')
-            before = time.time()
-            b_util.zip_repo(stripped_repo_path, archive_path)
-            logging.debug('Create archive time: %f', time.time() - before)
+        archive_path = os.path.join(temp_dir, 'RIOT_stripped.tar')
+        before = time.time()
+        b_util.zip_repo(stripped_repo_path, archive_path)
+        logging.debug('Create archive time: %f', time.time() - before)
 
-            archive_extension = 'tar'
+        archive_extension = 'tar'
 
-            build_result['output_archive_extension'] = archive_extension
-            # TODO: have a look at file_as_base64 and see whether this is
-            # opening in the wrong format
-            build_result['output_archive'] = b_util.file_as_base64(archive_path)
+        build_result['output_archive_extension'] = archive_extension
+        build_result['output_archive'] = b_util.file_as_base64(archive_path)
 
-            build_result['success'] = True
-            #return build_result
-
-       # else:
-
-       #     # get compiled binaries
-       #     elffile_path = b_util.app_elffile_path(bin_dir, app_name)
-       #     hexfile_path = b_util.app_hexfile_path(bin_dir, app_name)
-
-       #     if os.path.isfile(elffile_path) and os.path.isfile(hexfile_path):
-       #         build_result['success'] = True
-
-       # if prefetching:
-       #     # cache application
-       #     cache_application(application_cache, bin_dir, temp_dir, board, app_name, source_app_name, source_app_dir_name)
+        build_result['success'] = True
 
     except Exception as e:
         logging.error(str(e), exc_info=True)
@@ -214,37 +153,6 @@ def init_argparse():
                         help='if flag is set, binaries are just generated. Further steps are ignored')
 
     return parser
-
-
-def cache_application(cache, bin_dir, temp_dir, board, app_name, source_app_name, source_app_dir_name):
-
-    # get compiled binaries
-    elffile_path = b_util.app_elffile_path(bin_dir, app_name)
-    hexfile_path = b_util.app_hexfile_path(bin_dir, app_name)
-
-    # set new name for the file which should be cached with this name
-    cached_elffile_name = '%s.elf' % source_app_name
-    cached_hexfile_name = '%s.hex' % source_app_name
-
-    # set path to files to be cached
-    path_elffile_to_cache = os.path.join(temp_dir, cached_elffile_name)
-    path_hexfile_to_cache = os.path.join(temp_dir, cached_hexfile_name)
-
-    # copy files with new names to temp_dir
-    try:
-        copyfile(elffile_path, path_elffile_to_cache)
-        # reference to renamed copy for caching purpose
-        cache.cache(path_elffile_to_cache, board, source_app_dir_name, cached_elffile_name)
-    except Exception as e:
-        logging.debug(str(e))
-
-    try:
-        copyfile(hexfile_path, path_hexfile_to_cache)
-        # reference to renamed copy for caching purpose
-        cache.cache(path_hexfile_to_cache, board, source_app_dir_name, cached_hexfile_name)
-    except Exception as e:
-        logging.debug(str(e))
-
 
 def replace_application_name(path, application_name):
     """

@@ -61,7 +61,6 @@ async def upload_publickey(request):
     
 async def flash_device(request):
 
-
     build_result = b.build('samr21-xpro', 'suit_updater', False, False)
     build_result['output_archive'] = build_result['output_archive'].decode('ascii')
 

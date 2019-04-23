@@ -131,6 +131,8 @@ ADD ./RIOT_OTA_PoC /RIOT
 COPY requirements.txt /code/
 WORKDIR ${APP_ROOT}
 
+RUN apt-get update
+RUN apt-get install -y libssl-dev
 RUN pip3 install -r requirements.txt
 
 #USER ${APP_USER}

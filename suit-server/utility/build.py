@@ -70,7 +70,8 @@ def build(board, source_app_name, using_cache, prefetching):
 
     build_result['board'] = board
 
-    app_build_parent_dir = os.path.join(PROJECT_ROOT_DIR, 'RIOT', 'generated_by_rapstore')
+    app_build_parent_dir = os.path.join(PROJECT_ROOT_DIR, 'RIOT',
+            'examples_rapstorebuilds')
 
     # unique application directory name
     ticket_id = b_util.get_ticket_id()
@@ -83,22 +84,23 @@ def build(board, source_app_name, using_cache, prefetching):
 
     build_result['application_name'] = app_name
 
+    # copy application from examples/ to examples_rapstorebuilds/
     copytree(app_path, app_build_dir)
 
     app_build_dir_abs_path = os.path.abspath(app_build_dir)
     bin_dir = b_util.get_bindir(app_build_dir_abs_path, board)
 
+    # replace name of application in build application's makefile
     _replace_application_name(os.path.join(app_build_dir, 'Makefile'), app_name)
     before = time.time()
 
     build_result['cmd_output'] += b_util.execute_makefile(app_build_dir,
             board, app_name, '$(date +%s)')
 
-    #pprint.pprint(build_result)
     logging.debug('Build time: %f', time.time() - before)
 
+    # Strip and zip the repo
     try:
-
         stripped_repo_path = b_util.generate_stripped_repo(app_build_dir, PROJECT_ROOT_DIR, temp_dir, board, app_name)
 
         archive_path = os.path.join(temp_dir, 'RIOT_stripped.tar')

@@ -78,7 +78,8 @@ else
 endif
 
 $(RIOTBUILD_CONFIG_HEADER_C): keys.h
-keys.h: /app2/ota-resources/pubkeys/pub.key
+#keys.h: /app2/ota-resources/pubkeys/pub.key
+keys.h: /home/danielpetry/Downloads/pub.key
 	cp $< pubkey
 	xxd -i pubkey $@
 	rm pubkey
